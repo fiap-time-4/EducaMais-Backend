@@ -18,7 +18,7 @@ jobs:
       # (Opcional) Se você quiser buildar artefatos antes de enviar
       # - run: npm ci && npm run build
 
-      - name: Copiar arquivos para o servidor (scp/rsync)
+      - name: Copiar arquivos para o servidor
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -38,7 +38,7 @@ jobs:
             yarn.lock
             package-lock.json
 
-      - name: Deploy (ssh: criar .env e subir containers)
+      - name: Deploy
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_HOST }}
