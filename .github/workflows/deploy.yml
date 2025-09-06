@@ -25,7 +25,7 @@ jobs:
 
             # Se não existir, clone o repo
             if [ ! -d .git ]; then
-              git clone https://github.com/${{ github.repository }} .
+              git clone git@github.com:fiap-time-4/EducaMais-Backend.git .
             else
               git pull origin main
             fi
