@@ -14,5 +14,4 @@ RUN chmod +x wait-for.sh
 EXPOSE 3333
 EXPOSE 5555
 
-RUN npx prisma migrate deploy
-CMD ["./wait-for.sh", "db:5432", "--", "npm", "run", "start"]
+CMD ["./wait-for.sh", "db:5432", "--", "sh", "-c", "npx prisma migrate deploy && npm run start"]
