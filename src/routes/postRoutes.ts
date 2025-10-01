@@ -10,6 +10,7 @@ routes.get('/health', (req: Request, res: Response) => {
 });
 
 // Rotas para Posts
+routes.get('/posts/search', PostController.searchAll);
 routes.post('/posts', PostController.create);
 routes.get('/posts', PostController.getAll);
 routes.get('/posts/:id', PostController.getById);

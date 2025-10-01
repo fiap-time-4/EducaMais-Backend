@@ -87,13 +87,61 @@ export class PostController {
     }
   }
 
+//listar posts por conteudo ou titulo
+static async searchAll(req: Request, res: Response) {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+    const search = (req.query.search as string)?.trim();
+
+    const where = search
+      ? {
+          titulo: { contains: search, mode: 'insensitive' as const }
+        }
+      : {};
+
+    const [posts, total] = await Promise.all([
+      prisma.post.findMany({
+        skip,
+        take: limit,
+        where,
+        orderBy: {
+          createdAt: 'desc'
+        }
+      }),
+      prisma.post.count({ where })
+    ]);
+
+    return res.json({
+      success: true,
+      data: posts,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit)
+      }
+    });
+
+  } catch (error) {
+    console.error('Erro ao buscar posts:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+}
+
   // Buscar post por ID
+  
   static async getById(req: Request, res: Response) {
+
     try {
       const { id } = req.params;
 
       const post = await prisma.post.findUnique({
-        where: { id }
+        where: { id: Number(id) }
       });
 
       if (!post) {
@@ -117,6 +165,7 @@ export class PostController {
     }
   }
 
+
   // Atualizar post
   static async update(req: Request, res: Response) {
     try {
@@ -125,7 +174,7 @@ export class PostController {
 
       // Verificar se post existe
       const existingPost = await prisma.post.findUnique({
-        where: { id }
+        where: { id: Number(id) }
       });
 
       if (!existingPost) {
@@ -146,7 +195,7 @@ export class PostController {
 
       // Atualizar post
       const updatedPost = await prisma.post.update({
-        where: { id },
+        where: { id: Number(id) },
         data: dataToUpdate
       });
 
@@ -179,7 +228,7 @@ export class PostController {
 
       // Verificar se post existe
       const existingPost = await prisma.post.findUnique({
-        where: { id }
+        where: { id: Number(id) }
       });
 
       if (!existingPost) {
@@ -191,7 +240,7 @@ export class PostController {
 
       // Deletar post
       await prisma.post.delete({
-        where: { id }
+        where: { id: Number(id) }
       });
 
       return res.json({
