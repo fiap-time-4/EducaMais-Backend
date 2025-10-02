@@ -87,6 +87,7 @@ export class PostController {
     }
   }
 
+// Rever essa função pois está trazendo mais dados do que deveria.
 //listar posts por conteudo ou titulo
 static async searchAll(req: Request, res: Response) {
   try {

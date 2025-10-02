@@ -1,5 +1,7 @@
-import { Request, Response } from 'express'
-import { PrismaClient } from '@prisma/client'
+import { Request, Response } from 'express';
+import prisma from '../util/prisma';
 
-//const prisma = new PrismaClient.PrismaClient().$extends(withAccelerate)
+export class UserController {
+  // Listar todos os usuários
+}
 
