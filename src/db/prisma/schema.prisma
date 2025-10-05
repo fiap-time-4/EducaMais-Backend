@@ -11,15 +11,20 @@ model Post {
   id          Int      @id @default(autoincrement())
   titulo      String
   conteudo    String
-  autor       String
   createdAt   DateTime @default(now())
   atualizacao DateTime @updatedAt
+  authorId Int
+  author   User     @relation(fields: [authorId], references: [id])
 
   @@map("posts")
 }
+
+// schema.prisma
 
 model User {
   id    Int     @id @default(autoincrement())
   email String  @unique
   name  String?
+  password String
+  posts Post[]
 }

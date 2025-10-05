@@ -1,0 +1,30 @@
+name: CI (Build and Test)
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar o código do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar o ambiente Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "yarn"
+
+      - name: Instalar as dependências
+        run: yarn install --frozen-lockfile
+
+      - name: Rodar o Linter (se configurado)
+        run: yarn lint # Você precisaria de um script "lint" no package.json
+
+      - name: Rodar os testes
+        run: yarn test # Você precisaria de um script "test" e de testes no projeto

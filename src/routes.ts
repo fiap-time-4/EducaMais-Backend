@@ -4,14 +4,13 @@ import { UserRoutes } from "./routes/userRoutes";
 
 const routes = Router();
 
-routes.get('/health', (req: Request, res: Response) => {
-  const message = `Health Check OK, Backend is running on port ${process.env.PORT}!`;
+routes.get("/health", (req: Request, res: Response) => {
+  const message = `Health Check OK: a API está no ar!`;
 
   return res.json({ message });
 });
 
-
-routes.use('/posts', PostRoutes());
-routes.use('/users', UserRoutes());
+routes.use("/posts", PostRoutes());
+routes.use("/users", UserRoutes());
 
 export default routes;
