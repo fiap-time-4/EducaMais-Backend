@@ -3,9 +3,7 @@ import prisma from "../util/prisma";
 import { CreatePostData, UpdatePostData } from "../validation/postValidation";
 
 export class PostRepository {
-  static async create(data: {
-    titulo: string;
-    conteudo: string;
+  static async create(data: CreatePostData & {
     authorId: number;
   }) {
     return prisma.post.create({ data });

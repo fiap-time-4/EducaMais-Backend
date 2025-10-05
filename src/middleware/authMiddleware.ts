@@ -46,7 +46,7 @@ export const authMiddleware = (
 
     // 5. Chamar a próxima função na cadeia (o controller)
     return next();
-  } catch (error) {
+  } catch {
     return res.status(401).json({
       success: false,
       message: "Token inválido ou expirado.",
