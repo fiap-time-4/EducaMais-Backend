@@ -4,16 +4,17 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url       = env("DATABASE_URL")
 }
 
 model Post {
-  id          Int      @id @default(autoincrement())
-  titulo      String
-  conteudo    String
-  autor       String
-  createdAt   DateTime @default(now())
-  atualizacao DateTime @updatedAt
+  id            Int      @id @default(autoincrement())
+  titulo        String
+  conteudo      String
+  autorId       Int
+  autor         User     @relation(fields: [autorId], references: [id])
+  createdAt     DateTime @default(now())
+  atualizacao   DateTime @updatedAt
 
   @@map("posts")
 }
@@ -22,4 +23,5 @@ model User {
   id    Int     @id @default(autoincrement())
   email String  @unique
   name  String?
+  posts Post[]
 }
