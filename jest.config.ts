@@ -5,13 +5,9 @@ export default {
   testMatch: ["**/__tests__/**/*.spec.ts"],
   moduleFileExtensions: ["ts", "tsx", "js", "json"],
   roots: ["<rootDir>"],
-  moduleNameMapper: {
-    "^(../.*)$": "$1",
-    "^(./.*)$": "$1",
-  },
   clearMocks: true,
   collectCoverage: true,
-  collectCoverageFrom: ["src/**/*.ts", "!src/db/**"],
+  collectCoverageFrom: ["src/**/*.ts", "!src/db/**", "!src/app.ts", "!src/server.ts"],
   coverageDirectory: "coverage",
-  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
+  setupFilesAfterEnv: ["<rootDir>/src/jest.setup.ts"],
 };

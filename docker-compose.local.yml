@@ -17,14 +17,19 @@ services:
   api:
     build:
       context: .
-      dockerfile: dockerfile.dev
+      dockerfile: dockerfile.dev # Correto, usando seu arquivo de dev
     container_name: api
     restart: always
     env_file:
       - .env
     volumes:
-      - .:/app
-      - /app/node_modules
+      - ./src:/app/src
+      - ./prisma:/app/prisma
+      - ./package.json:/app/package.json
+      - ./package-lock.json:/app/package-lock.json
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./jest.config.ts:/app/jest.config.ts
+      - ./jest.setup.ts:/app/jest.setup.ts
     ports:
       - "3333:3333"
       - "5555:5555"

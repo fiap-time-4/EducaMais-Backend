@@ -1,42 +1,42 @@
-import { Request, Response } from 'express';
-// Não precisamos mais importar o Prisma diretamente aqui!
-// import prisma from '../util/prisma'; 
+import { Request, Response } from "express";
+import { UserRepository } from "../repositories/UserRepository";
 
-// Importamos a nova classe de Repositório
-import { UserRepository } from '../repositories/userRepository';
-
-// Criamos uma instância do Repositório para ser usada
-const userRepository = new UserRepository();
-
+/**
+ * Controller para gerenciar as requisições HTTP da entidade User.
+ * Lida com a lógica de rota, validação de entrada e formatação da resposta.
+ */
 export class UserController {
-    
-    // Método para criar um novo usuário
-    public async create(req: Request, res: Response) {
-        // 1. Receber os dados do corpo da requisição
-        const { email, name } = req.body;
+  /**
+   * Cria uma instância do UserController.
+   * @param {UserRepository} userRepository
+   */
+  constructor(private userRepository: UserRepository) {}
 
-        try {
-            // **Validação básica (Opcional, mas recomendado)**
-            if (!email) {
-                return res.status(400).json({ error: 'O email é obrigatório para criar um usuário.' });
-            }
+  /**
+   * @route   POST /users
+   * @desc    Cria um novo usuário.
+   * @access  Público
+   * @param {Request} req - O objeto de requisição do Express, esperando { email, name } no corpo.
+   * @param {Response} res - O objeto de resposta do Express.
+   * @returns {Promise<Response>} Retorna uma resposta JSON com o usuário criado ou uma mensagem de erro.
+   */
+  public create = async (req: Request, res: Response): Promise<Response> => {
+    const { email, name } = req.body;
 
-            // 2. **Delegar a lógica de persistência para o Repositório**
-            const newUser = await userRepository.create(email, name);
+    try {
+      if (!email) {
+        return res.status(400).json({ error: "O email é obrigatório." });
+      }
 
-            // 3. Enviar a resposta de sucesso
-            return res.status(201).json({ 
-                message: 'Usuário criado com sucesso!', 
-                user: newUser 
-            });
+      const newUser = await this.userRepository.create(email, name);
 
-        } catch (error) {
-            // Captura erros (ex: falha de conexão, email duplicado, etc.)
-            console.error(error);
-            // Em caso de erro, retorna um status 500
-            return res.status(500).json({ error: 'Não foi possível criar o usuário.' });
-        }
+      return res.status(201).json({
+        message: "Usuário criado com sucesso!",
+        user: newUser,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(409).json({ error: "Este email já está cadastrado." });
     }
-
-    // Listar todos os usuários (manter por agora)
+  };
 }

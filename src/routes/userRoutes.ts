@@ -1,16 +1,23 @@
 import { Router } from "express";
-// Importamos o Controller que acabámos de refatorar
-import { UserController } from "../controllers/userController"; 
+import { UserController } from "../controllers/UserController";
+import { UserRepository } from "../repositories/UserRepository";
 
-// Criamos uma instância do Controller
-const userController = new UserController();
+const userRepository = new UserRepository();
+const userController = new UserController(userRepository);
 
-export function UserRoutes() {
+/**
+ * Configura e retorna o roteador para os endpoints de usuário.
+ * @returns {Router} Uma instância do roteador do Express com as rotas de usuário.
+ */
+export function UserRoutes(): Router {
   const routes = Router();
 
-  // 1. Rota para a Criação de Usuário (POST /)
-  // Chamamos o método 'create' do UserController
-  routes.post('/', userController.create); 
+  /**
+   * @route
+   * @desc
+   * @access
+   */
+  routes.post("/", userController.create);
 
   return routes;
 }

@@ -1,26 +1,25 @@
-import { PrismaClient, User } from '@prisma/client';
+import { User } from '@prisma/client';
+import prisma from '../util/prisma';
 
-// Assumindo que você usa um arquivo de utilitário (utility file) para inicializar o PrismaClient,
-// vamos importá-lo aqui para manter a consistência, se não, usamos 'new PrismaClient()'.
-// Se seu 'util/prisma' for a instância única, use:
-import prisma from '../util/prisma'; 
-
-// Este repositório é responsável por todas as operações de CRUD para o modelo User.
+/**
+ * Repositório para gerenciar as operações da entidade User no banco de dados.
+ */
 export class UserRepository {
-    
-    // ----------------------------------------------------
-    // Operação: Criação de um novo Usuário
-    // ----------------------------------------------------
-    public async create(email: string, name?: string): Promise<User> {
-        // A lógica de criação usa o método 'create' do Prisma
-        const newUser = await prisma.user.create({
-            data: {
-                email, // OBRIGATÓRIO (definido no schema.prisma)
-                name,  // OPCIONAL (definido no schema.prisma)
-            },
-        });
-        return newUser;
-    }
+  /**
+   * Cria um novo usuário no banco de dados.
+   * @param email O email do novo usuário (obrigatório).
+   * @param name O nome do novo usuário (opcional).
+   * @returns A promessa de um objeto User criado.
+   */
+  public async create(email: string, name?: string): Promise<User> {
+    const newUser = await prisma.user.create({
+      data: {
+        email,
+        name,
+      },
+    });
 
-    // Adicione outros métodos, como findById, findByEmail, etc., aqui futuramente.
+    return newUser;
+  }
+
 }
