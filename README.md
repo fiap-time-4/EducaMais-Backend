@@ -94,34 +94,42 @@ O servidor da API estará acessível em `http://localhost:3333`.
 
 ## Fluxo de Trabalho de Desenvolvimento
 
+Todos os comandos de desenvolvimento (como rodar migrations, testes ou instalar pacotes) devem ser executados **dentro do contêiner da API** para garantir consistência. Isso é feito usando o comando `docker-compose exec api ...`.
+
 ### **Rodando Migrations do Banco de Dados**
 
-Sempre que houver uma alteração no arquivo `prisma/schema.prisma`, uma nova migration precisa ser gerada para atualizar a estrutura do banco de dados. 
+Sempre que você alterar o arquivo `prisma/schema.prisma`, execute o seguinte comando para gerar e aplicar uma nova migration no banco de dados que está rodando no Docker.
 
- **Passos para o Ambiente Local (Fora do Container):** 
+Bash
 
-1. Certifique-se de que o container `db` está UP e acessível na porta `1000`. 
-2. Altere temporariamente o `.env` para usar o host local: 
- `DATABASE_URL="postgresql://postgres:postgres@localhost:1000/educamais?schema=public"` 
-3. Execute a Migration:`bash <br/> npx prisma migrate dev --name <nome-descritivo-da-migration> <br/>`  
-4. Gere o Cliente Prisma:`bash <br/> npx prisma generate <br/>`  
-5. REVERTA o `.env` para o host interno do Docker para que a API funcione: 
- `DATABASE_URL="postgresql://postgres:postgres@db:5432/educamais?schema=public"` 
-6. Reinicie os containers para que a API utilize a nova variável e o Cliente Prisma atualizado: `docker-compose -f docker-compose.local.yml down`
-    
-    `docker-compose -f docker-compose.local.yml up -d`
-    
+`docker-compose -f docker-compose.local.yml exec api npx prisma migrate dev --name <nome-da-migration>`
 
-### Instalando Novas Dependências
+> Vantagem: Você não precisa mais se preocupar em alterar o arquivo .env. O contêiner da API já sabe como se comunicar com o contêiner do banco.
+> 
 
-Para adicionar uma nova biblioteca, siga os passos:
+### **Instalando Novas Dependências**
 
-1. Pare os contêineres: `docker compose -f docker-compose.local.yml down`
-2. Instale a dependência com **npm**:
-    - **Produção:** `npm install nome-da-biblioteca`
-    - **Desenvolvimento:** `npm install nome-da-biblioteca --dev`
-3. Suba os contêineres novamente com o comando **`up`**, **forçando a reconstrução** da imagem para incluir a nova dependência: 
-`docker-compose -f docker-compose.local.yml up --build -d`
+Para adicionar uma nova biblioteca ao projeto, execute o comando `npm install` dentro do contêiner. Isso garante que a dependência seja instalada no ambiente correto (Linux).
+
+Bash
+
+# Para dependências de produção
+`docker-compose -f docker-compose.local.yml exec api npm install <nome-da-biblioteca>`
+
+# Para dependências de desenvolvimento
+`docker-compose -f docker-compose.local.yml exec api npm install <nome-da-biblioteca> --save-dev`
+
+Após instalar, talvez seja necessário reiniciar o contêiner para que o servidor reconheça a nova biblioteca:
+
+`docker-compose -f docker-compose.local.yml restart api`
+
+### **Rodando os Testes Automatizados**
+
+Para executar a suíte de testes com Jest, utilize o comando:
+
+`docker-compose -f docker-compose.local.yml exec api npm test`
+
+Isso irá rodar todos os arquivos `.spec.ts` e exibir o relatório de cobertura de testes no final.
 
 ---
 
@@ -458,9 +466,9 @@ O desenvolvimento deste projeto foi uma jornada de aprendizado contínuo, marcad
 
 Alguns dos desafios específicos que a equipe enfrentou foram:
 
-- **Curva de Aprendizagem:** A equipe optou por utilizar tecnologias novas para a maioria, como **Docker**, **Prisma** e **TypeScript**. Isso exigiu tempo para pesquisa e adaptação, o que foi um fator considerado nas estimativas de horas.
+- **Curva de Aprendizagem:** A equipe optou por utilizar tecnologias novas para a maioria, como **Docker**, **Prisma** e **TypeScript**. Isso exigiu tempo para pesquisa e adaptação.
 - **Colaboração em Equipe:** O trabalho em grupo foi essencial para superar as dificuldades. Desenvolvedores mais experientes atuaram como mentores, prestando suporte e revisando o código. Essa dinâmica de organização e compartilhamento de conhecimento se mostrou crucial para a entrega do projeto.
 - **Tomada de Decisão:** A escolha do **PostgreSQL** como banco de dados foi unânime. A decisão final por um banco relacional se baseou na familiaridade e na sua capacidade de lidar com a estrutura de dados do projeto, que é relativamente simples.
 - **Integração de Tecnologias:** A integração de diferentes ferramentas, como **Express**, **Prisma** e **Docker**, exigiu atenção aos detalhes de configuração para que todos os serviços funcionassem de forma coesa.
 
-Apesar dos desafios, a experiência foi extremamente enriquecedora. A equipe não apenas entregou a aplicação, mas também desenvolveu habilidades em novas tecnologias e fortaleceu a colaboração, demonstrando a importância do trabalho em equipe e do apoio mútuo.
+Apesar dos desafios, a experiência foi extremamente enriquecedora. A equipe não apenas entregou a aplicação, mas também desenvolveu habilidades em novas tecnologias.
