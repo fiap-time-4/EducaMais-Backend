@@ -54,40 +54,35 @@ Siga este passo a passo para configurar e rodar a aplicação localmente.
 
 ### 1. Clonar o Repositório
 
-Bash
-
-`git clone <URL_DO_SEU_REPOSITORIO>`
+`git clone https://github.com/fiap-time-4/EducaMais-Backend.git`
 
 ### 2. Acessar a Pasta do Projeto
-
-Bash
 
 `cd EducaMais-Backend`
 
 ### 3. Configurar Variáveis de Ambiente
 
-O projeto precisa de um arquivo `.env` para carregar informações sensíveis, como as credenciais do banco de dados.
+    O projeto precisa de um arquivo `.env` para carregar informações sensíveis, como as credenciais do banco de dados.
 
 1. Crie uma cópia do arquivo `.env.example` e renomeie-a para `.env`.
 
 ### 4. Instalar as Dependências do Projeto
 
-Este comando irá baixar todas as bibliotecas que a aplicação precisa (Prisma, Express, etc.).
+    Este comando irá baixar todas as bibliotecas que a aplicação precisa (Prisma, Express, etc.).
 
-`npm install`
+    `npm install`
 
 ### 5. Subir os Contêineres com Docker
 
 Este comando irá construir e iniciar os contêineres da API e do banco de dados.
 
 1. **Certifique-se de que o Docker Desktop está aberto e com o status "Running" (verde) antes de continuar.**
-2. Execute o comando abaixo no seu terminal:Bash
+2. Execute o comando abaixo no seu terminal
     
     `docker compose -f docker-compose.local.yml up --build -d`
     
     *A flag `-d` executa os contêineres em segundo plano (detached mode).*
     
-
 O servidor da API estará acessível em `http://localhost:3333`.
 
 ---
@@ -100,23 +95,16 @@ Todos os comandos de desenvolvimento (como rodar migrations, testes ou instalar 
 
 Sempre que você alterar o arquivo `prisma/schema.prisma`, execute o seguinte comando para gerar e aplicar uma nova migration no banco de dados que está rodando no Docker.
 
-Bash
-
 `docker-compose -f docker-compose.local.yml exec api npx prisma migrate dev --name <nome-da-migration>`
-
-> Vantagem: Você não precisa mais se preocupar em alterar o arquivo .env. O contêiner da API já sabe como se comunicar com o contêiner do banco.
-> 
 
 ### **Instalando Novas Dependências**
 
 Para adicionar uma nova biblioteca ao projeto, execute o comando `npm install` dentro do contêiner. Isso garante que a dependência seja instalada no ambiente correto (Linux).
 
-Bash
-
-# Para dependências de produção
+### Para dependências de produção
 `docker-compose -f docker-compose.local.yml exec api npm install <nome-da-biblioteca>`
 
-# Para dependências de desenvolvimento
+### Para dependências de desenvolvimento
 `docker-compose -f docker-compose.local.yml exec api npm install <nome-da-biblioteca> --save-dev`
 
 Após instalar, talvez seja necessário reiniciar o contêiner para que o servidor reconheça a nova biblioteca:
@@ -161,10 +149,10 @@ Cria um novo usuário no sistema. Este passo é **necessário** antes de criar p
 
 JSON
 
-`{
-  "email": "usuario@exemplo.com",
-  "name": "Nome do Usuário"
-}`
+`{\
+  "email": "usuario@exemplo.com",\
+  "name": "Nome do Usuário"\
+}`\
 
 - `email` (obrigatório): Deve ser um email único.
 - `name` (opcional): Nome do usuário.
@@ -173,16 +161,16 @@ JSON
 
 JSON
 
-`{
-    "message": "Usuário criado com sucesso!",
-    "user": {
-        "id": 1,
-        "email": "usuario@exemplo.com",
-        "name": "Nome do Usuário",
-        "createdAt": "2025-10-07T23:55:00.000Z",
-        "updatedAt": "2025-10-07T23:55:00.000Z"
-    }
-}`
+`{\
+    "message": "Usuário criado com sucesso!",\
+    "user": {\
+        "id": 1,\
+        "email": "usuario@exemplo.com",\
+        "name": "Nome do Usuário",\
+        "createdAt": "2025-10-07T23:55:00.000Z",\
+        "updatedAt": "2025-10-07T23:55:00.000Z"\
+    }\
+}`\
 
 ---
 
@@ -201,11 +189,11 @@ Cria um novo post, associando-o a um usuário existente através do `autorId`.
 
 JSON
 
-`{
-  "titulo": "Primeiro Post",
-  "conteudo": "Este é o conteúdo do primeiro post.",
-  "autorId": 1
-}`
+`{\
+  "titulo": "Primeiro Post",\
+  "conteudo": "Este é o conteúdo do primeiro post.",\
+  "autorId": 1\
+}`\
 
 - `autorId` (obrigatório): Deve ser o `id` de um usuário que já existe no banco de dados.
 
@@ -215,23 +203,23 @@ A resposta já inclui o objeto completo do autor.
 
 JSON
 
-`{
-    "success": true,
-    "message": "Post criado com sucesso",
-    "data": {
-        "id": 1,
-        "titulo": "Primeiro Post",
-        "conteudo": "Este é o conteúdo do primeiro post.",
-        "autorId": 1,
-        "createdAt": "2025-10-07T23:45:00.000Z",
-        "atualizacao": "2025-10-07T23:45:00.000Z",
-        "autor": {
-            "id": 1,
-            "email": "usuario@exemplo.com",
-            "name": "Nome do Usuário"
-        }
-    }
-}`
+`{\
+    "success": true,\
+    "message": "Post criado com sucesso",\
+    "data": {\
+        "id": 1,\
+        "titulo": "Primeiro Post",\
+        "conteudo": "Este é o conteúdo do primeiro post.",\
+        "autorId": 1,\
+        "createdAt": "2025-10-07T23:45:00.000Z",\
+        "atualizacao": "2025-10-07T23:45:00.000Z",\
+        "autor": {\
+            "id": 1,\
+            "email": "usuario@exemplo.com",\
+            "name": "Nome do Usuário"\
+        }\
+    }\
+}`\
 
 ### ❌ Respostas de Erro
 
@@ -241,19 +229,21 @@ Ocorre quando os dados enviados pelo cliente são inválidos. Existem duas situa
 
 1. **Falha na Validação dos Campos:** Um campo obrigatório não foi enviado ou não segue as regras (ex: título vazio, conteúdo muito curto).JSON
     
-    `{
-        "success": false,
-        "message": "Título é obrigatório"
-    }`
+    `{\
+        "success": false,\
+        "message": "Título é obrigatório"\
+    }`\
     
     *Outros exemplos de mensagem: "Conteúdo deve ter pelo menos 10 caracteres", "ID do autor é obrigatório e deve ser um número válido".*
     
 2. **`autorId` Inexistente:** O `autorId` enviado é um número válido, mas não corresponde a nenhum usuário cadastrado no banco de dados.JSON
     
-    `{
-        "success": false,
-        "message": "O autorId fornecido não corresponde a um usuário existente."
-    }`
+JSON
+
+    `{\
+        "success": false,\
+        "message": "O autorId fornecido não corresponde a um usuário existente."\
+    }`\
     
 
 **Status `500 Internal Server Error`**
@@ -262,10 +252,10 @@ Ocorre quando há uma falha inesperada no servidor que impede a criação do pos
 
 JSON
 
-`{
-    "success": false,
-    "message": "Não foi possível criar o post."
-}`
+`{\
+    "success": false,\
+    "message": "Não foi possível criar o post."\
+}`\
 
 ---
 
@@ -287,30 +277,30 @@ Retorna uma lista paginada de todos os posts, incluindo os dados do autor de cad
 
 JSON
 
-`{
-    "success": true,
-    "data": [
-        {
-            "id": 1,
-            "titulo": "Primeiro Post",
-            "conteudo": "Este é o conteúdo do primeiro post.",
-            "autorId": 1,
-            "createdAt": "2025-10-07T23:45:00.000Z",
-            "atualizacao": "2025-10-07T23:45:00.000Z",
-            "autor": {
-                "id": 1,
-                "email": "usuario@exemplo.com",
-                "name": "Nome do Usuário"
-            }
-        }
-    ],
-    "pagination": {
-        "page": 1,
-        "limit": 10,
-        "total": 1,
-        "pages": 1
-    }
-}`
+`{\
+    "success": true,\
+    "data": [\
+        {\
+            "id": 1,\
+            "titulo": "Primeiro Post",\
+            "conteudo": "Este é o conteúdo do primeiro post.",\
+            "autorId": 1,\
+            "createdAt": "2025-10-07T23:45:00.000Z",\
+            "atualizacao": "2025-10-07T23:45:00.000Z",\
+            "autor": {\
+                "id": 1,\
+                "email": "usuario@exemplo.com",\
+                "name": "Nome do Usuário"\
+            }\
+        }\
+    ],\
+    "pagination": {\
+        "page": 1,\
+        "limit": 10,\
+        "total": 1,\
+        "pages": 1\
+    }\
+}`\
 
 ---
 
@@ -325,31 +315,31 @@ Busca um post específico pelo seu ID.
 
 JSON
 
-`{
-    "success": true,
-    "data": {
-        "id": 1,
-        "titulo": "Primeiro Post",
-        "conteudo": "Este é o conteúdo do primeiro post.",
-        "autorId": 1,
-        "createdAt": "2025-10-07T23:45:00.000Z",
-        "atualizacao": "2025-10-07T23:45:00.000Z",
-        "autor": {
-            "id": 1,
-            "email": "usuario@exemplo.com",
-            "name": "Nome do Usuário"
-        }
-    }
-}`
+`{\
+    "success": true,\
+    "data": {\
+        "id": 1,\
+        "titulo": "Primeiro Post",\
+        "conteudo": "Este é o conteúdo do primeiro post.",\
+        "autorId": 1,\
+        "createdAt": "2025-10-07T23:45:00.000Z",\
+        "atualizacao": "2025-10-07T23:45:00.000Z",\
+        "autor": {\
+            "id": 1,\
+            "email": "usuario@exemplo.com",\
+            "name": "Nome do Usuário"\
+        }\
+    }\
+}`\
 
 ### ❌ Resposta de Erro (404 Not Found)
 
 JSON
 
-`{
-    "success": false,
-    "message": "Post não encontrado"
-}`
+`{\
+    "success": false,\
+    "message": "Post não encontrado"\
+}`\
 
 ---
 
@@ -366,32 +356,32 @@ Apenas os campos a serem atualizados são necessários.
 
 JSON
 
-`{
-  "titulo": "Título Atualizado",
-  "conteudo": "Conteúdo novo e revisado."
-}`
+`{\
+  "titulo": "Título Atualizado",\
+  "conteudo": "Conteúdo novo e revisado."\
+}`\
 
 ### ✅ Resposta de Sucesso (200 OK)
 
 JSON
 
-`{
-    "success": true,
-    "message": "Post atualizado com sucesso",
-    "data": {
-        "id": 1,
-        "titulo": "Título Atualizado",
-        "conteudo": "Conteúdo novo e revisado.",
-        "autorId": 1,
-        "createdAt": "2025-10-07T23:45:00.000Z",
-        "atualizacao": "2025-10-07T23:58:00.000Z",
-        "autor": {
-            "id": 1,
-            "email": "usuario@exemplo.com",
-            "name": "Nome do Usuário"
-        }
-    }
-}`
+`{\
+    "success": true,\
+    "message": "Post atualizado com sucesso",\
+    "data": {\
+        "id": 1,\
+        "titulo": "Título Atualizado",\
+        "conteudo": "Conteúdo novo e revisado.",\
+        "autorId": 1,\
+        "createdAt": "2025-10-07T23:45:00.000Z",\
+        "atualizacao": "2025-10-07T23:58:00.000Z",\
+        "autor": {\
+            "id": 1,\
+            "email": "usuario@exemplo.com",\
+            "name": "Nome do Usuário"\
+        }\
+    }\
+}`\
 
 ---
 
@@ -406,10 +396,10 @@ Deleta um post do banco de dados.
 
 JSON
 
-`{
-    "success": true,
-    "message": "Post deletado com sucesso"
-}`
+`{\
+    "success": true,\
+    "message": "Post deletado com sucesso"\
+}`\
 
 ---
 
@@ -435,30 +425,30 @@ A estrutura da resposta é idêntica à da listagem de todos os posts, com pagin
 
 JSON
 
-`{
-    "success": true,
-    "data": [
-        {
-            "id": 1,
-            "titulo": "Primeiro Comunicado",
-            "conteudo": "Este é o conteúdo do primeiro post.",
-            "autorId": 1,
-            "createdAt": "...",
-            "atualizacao": "...",
-            "autor": {
-                "id": 1,
-                "email": "usuario@exemplo.com",
-                "name": "Nome do Usuário"
-            }
-        }
-    ],
-    "pagination": {
-        "page": 1,
-        "limit": 5,
-        "total": 1,
-        "pages": 1
-    }
-}`
+`{\
+    "success": true,\
+    "data": [\
+        {\
+            "id": 1,\
+            "titulo": "Primeiro Comunicado",\
+            "conteudo": "Este é o conteúdo do primeiro post.",\
+            "autorId": 1,\
+            "createdAt": "...",\
+            "atualizacao": "...",\
+            "autor": {\
+                "id": 1,\
+                "email": "usuario@exemplo.com",\
+                "name": "Nome do Usuário"\
+            }\
+        }\
+    ],\
+    "pagination": {\
+        "page": 1,\
+        "limit": 5,\
+        "total": 1,\
+        "pages": 1\
+    }\
+}`\
 
 ---
 
