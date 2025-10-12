@@ -262,21 +262,7 @@ JSON
     "success": false,
     "message": "Título é obrigatório"
 }
-```    
-    
-*Outros exemplos de mensagem: "Conteúdo deve ter pelo menos 10 caracteres", "ID do autor é obrigatório e deve ser um número válido".*
-    
-2. **`autorId` Inexistente:** O `autorId` enviado é um número válido, mas não corresponde a nenhum usuário cadastrado no banco de dados.
-    
-JSON
-
-```
-{
-    "success": false,
-    "message": "O autorId fornecido não corresponde a um usuário existente."
-}
-```
-    
+```     
 
 **Status `500 Internal Server Error`**
 
