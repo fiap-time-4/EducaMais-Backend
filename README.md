@@ -2,6 +2,8 @@
 
 Repositório oficial do back-end para o projeto EducaMais, uma plataforma de blogging para docentes e alunos.
 
+[Demonstração do EducaMais Backend - YouTube](https://youtu.be/DEBKfyN9U1w)
+
 ## Arquitetura e Tecnologias
 
 A aplicação segue uma arquitetura em camadas para garantir a separação de responsabilidades, manutenibilidade e escalabilidade.
