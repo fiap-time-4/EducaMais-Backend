@@ -148,7 +148,6 @@ Cria um novo usuário no sistema. Este passo é **necessário** antes de criar p
 ### Corpo da Requisição (Body)
 
 JSON
-
 ```
 {
   "email": "usuario@exemplo.com",
@@ -162,7 +161,6 @@ JSON
 ### ✅ Resposta de Sucesso (201 Created)
 
 JSON
-
 ```
 {
     "message": "Usuário criado com sucesso!",
@@ -173,6 +171,28 @@ JSON
         "createdAt": "2025-10-07T23:55:00.000Z",
         "updatedAt": "2025-10-07T23:55:00.000Z"
     }
+}
+```
+
+### ❌ Respostas de Erro
+
+**400 Bad Request (Email faltando):**
+
+JSON
+```
+{
+    "success": false,
+    "error": "O email é obrigatório."
+}
+```
+
+**409 Conflict (Email já existe):**
+
+JSON
+```
+{
+    "success": false,
+    "error": "Este email já está cadastrado."
 }
 ```
 
@@ -192,7 +212,6 @@ Cria um novo post, associando-o a um usuário existente através do `autorId`.
 ### Corpo da Requisição (Body)
 
 JSON
-
 ```
 {
   "titulo": "Primeiro Post",
@@ -200,8 +219,6 @@ JSON
   "autorId": 1
 }
 ```
-
-
 - `autorId` (obrigatório): Deve ser o `id` de um usuário que já existe no banco de dados.
 
 ### ✅ Resposta de Sucesso (201 Created)
