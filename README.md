@@ -151,11 +151,8 @@ JSON
 
 ```
 {
-
   "email": "usuario@exemplo.com",
-
   "name": "Nome do Usuário"
-
 }
 ```
 
@@ -168,23 +165,14 @@ JSON
 
 ```
 {
-
     "message": "Usuário criado com sucesso!",
-
     "user": {
-
         "id": 1,
-
         "email": "usuario@exemplo.com",
-
         "name": "Nome do Usuário",
-
         "createdAt": "2025-10-07T23:55:00.000Z",
-
         "updatedAt": "2025-10-07T23:55:00.000Z"
-
     }
-
 }
 ```
 
@@ -207,13 +195,9 @@ JSON
 
 ```
 {
-
   "titulo": "Primeiro Post",
-
   "conteudo": "Este é o conteúdo do primeiro post.",
-
   "autorId": 1
-
 }
 ```
 
@@ -228,40 +212,23 @@ JSON
 
 ```
 {
-
     "success": true,
-
     "message": "Post criado com sucesso",
-
     "data": {
-
         "id": 1,
-
         "titulo": "Primeiro Post",
-
         "conteudo": "Este é o conteúdo do primeiro post.",
-
         "autorId": 1,
-
         "createdAt": "2025-10-07T23:45:00.000Z",
-
         "atualizacao": "2025-10-07T23:45:00.000Z",
-
         "autor": {
-
             "id": 1,
-
             "email": "usuario@exemplo.com",
-
             "name": "Nome do Usuário"
-
         }
-
     }
-
 }
 ```
-
 
 ### ❌ Respostas de Erro
 
@@ -275,11 +242,8 @@ JSON
     
 ```
 {
-
     "success": false,
-
     "message": "Título é obrigatório"
-
 }
 ```    
     
@@ -303,10 +267,12 @@ Ocorre quando há uma falha inesperada no servidor que impede a criação do pos
 
 JSON
 
-```{\
-    "success": false,\
-    "message": "Não foi possível criar o post."\
-}```\
+```
+{
+    "success": false,
+    "message": "Não foi possível criar o post."
+}
+```
 
 ---
 
@@ -328,54 +294,32 @@ Retorna uma lista paginada de todos os posts, incluindo os dados do autor de cad
 
 JSON
 
-```{
-
+```
+{
     "success": true,
-
     "data": [
-
         {
-
             "id": 1,
-
             "titulo": "Primeiro Post",
-
             "conteudo": "Este é o conteúdo do primeiro post.",
-
             "autorId": 1,
-
             "createdAt": "2025-10-07T23:45:00.000Z",
-
             "atualizacao": "2025-10-07T23:45:00.000Z",
-
             "autor": {
-
                 "id": 1,
-
                 "email": "usuario@exemplo.com",
-
                 "name": "Nome do Usuário"
-
             }
-
         }
-
     ],
-
     "pagination": {
-
         "page": 1,
-
         "limit": 10,
-
         "total": 1,
-
         "pages": 1
-
     }
-
-}```
-
+}
+```
 
 ---
 
@@ -390,51 +334,35 @@ Busca um post específico pelo seu ID.
 
 JSON
 
-```{
-
+```
+{
     "success": true,
-
     "data": {
-
         "id": 1,
-
         "titulo": "Primeiro Post",
-
         "conteudo": "Este é o conteúdo do primeiro post.",
-
         "autorId": 1,
-
         "createdAt": "2025-10-07T23:45:00.000Z",
-
         "atualizacao": "2025-10-07T23:45:00.000Z",
-
         "autor": {
-
             "id": 1,
-
             "email": "usuario@exemplo.com",
-
             "name": "Nome do Usuário"
-
         }
-
     }
-
-}```
-
+}
+```
 
 ### ❌ Resposta de Erro (404 Not Found)
 
 JSON
 
-```{
-
+```
+{
     "success": false,
-
     "message": "Post não encontrado"
-
-}```
-
+}
+```
 
 ---
 
@@ -451,53 +379,37 @@ Apenas os campos a serem atualizados são necessários.
 
 JSON
 
-```{
-
+```
+{
   "titulo": "Título Atualizado",
-
   "conteudo": "Conteúdo novo e revisado."
-
-}```
+}
+```
 
 
 ### ✅ Resposta de Sucesso (200 OK)
 
 JSON
 
-```{
-
+```
+{
     "success": true,
-
     "message": "Post atualizado com sucesso",
-
     "data": {
-
         "id": 1,
-
         "titulo": "Título Atualizado",
-
         "conteudo": "Conteúdo novo e revisado.",
-
         "autorId": 1,
-
         "createdAt": "2025-10-07T23:45:00.000Z",
-
         "atualizacao": "2025-10-07T23:58:00.000Z",
-
         "autor": {
-
             "id": 1,
-
             "email": "usuario@exemplo.com",
-
             "name": "Nome do Usuário"
-
         }
-
     }
-
-}```
-
+}
+```
 
 ---
 
@@ -512,14 +424,12 @@ Deleta um post do banco de dados.
 
 JSON
 
-```{
-
+```
+{
     "success": true,
-
     "message": "Post deletado com sucesso"
-
-}```
-
+}
+```
 
 ---
 
@@ -547,55 +457,34 @@ JSON
 
 ```
 {
-
     "success": true,
-
     "data": [
-
         {
-
             "id": 1,
-
             "titulo": "Primeiro Comunicado",
-
             "conteudo": "Este é o conteúdo do primeiro post.",
-
             "autorId": 1,
-
             "createdAt": "...",
-
             "atualizacao": "...",
-
             "autor": {
-
                 "id": 1,
-
                 "email": "usuario@exemplo.com",
-
                 "name": "Nome do Usuário"
-
             }
-
         }
-
     ],
 
     "pagination": {
-
         "page": 1,
-
         "limit": 5,
-
         "total": 1,
-
         "pages": 1
-
     }
-
 }
 ```
 
 ---
+## Desafios
 
 O desenvolvimento deste projeto foi uma jornada de aprendizado contínuo, marcada pela colaboração entre membros com diferentes níveis de experiência. Nosso principal desafio foi a gestão de tempo e a distribuição de tarefas, garantindo que todos pudessem contribuir de forma significativa.
 
