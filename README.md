@@ -149,13 +149,15 @@ Cria um novo usuário no sistema. Este passo é **necessário** antes de criar p
 
 JSON
 
-```{
+```
+{
 
   "email": "usuario@exemplo.com",
 
   "name": "Nome do Usuário"
 
-}```
+}
+```
 
 - `email` (obrigatório): Deve ser um email único.
 - `name` (opcional): Nome do usuário.
@@ -164,7 +166,8 @@ JSON
 
 JSON
 
-```{
+```
+{
 
     "message": "Usuário criado com sucesso!",
 
@@ -182,7 +185,8 @@ JSON
 
     }
 
-}```
+}
+```
 
 ---
 
@@ -201,7 +205,8 @@ Cria um novo post, associando-o a um usuário existente através do `autorId`.
 
 JSON
 
-```{
+```
+{
 
   "titulo": "Primeiro Post",
 
@@ -209,7 +214,8 @@ JSON
 
   "autorId": 1
 
-}```
+}
+```
 
 
 - `autorId` (obrigatório): Deve ser o `id` de um usuário que já existe no banco de dados.
@@ -220,7 +226,8 @@ A resposta já inclui o objeto completo do autor.
 
 JSON
 
-```{
+```
+{
 
     "success": true,
 
@@ -252,7 +259,8 @@ JSON
 
     }
 
-}```
+}
+```
 
 
 ### ❌ Respostas de Erro
@@ -265,24 +273,28 @@ Ocorre quando os dados enviados pelo cliente são inválidos. Existem duas situa
 
 JSON
     
-    ```{
+```
+{
 
-        "success": false,
+    "success": false,
 
-        "message": "Título é obrigatório"
+    "message": "Título é obrigatório"
 
-    }```    
+}
+```    
     
-    *Outros exemplos de mensagem: "Conteúdo deve ter pelo menos 10 caracteres", "ID do autor é obrigatório e deve ser um número válido".*
+*Outros exemplos de mensagem: "Conteúdo deve ter pelo menos 10 caracteres", "ID do autor é obrigatório e deve ser um número válido".*
     
 2. **`autorId` Inexistente:** O `autorId` enviado é um número válido, mas não corresponde a nenhum usuário cadastrado no banco de dados.
     
 JSON
 
-    ```{\
-        "success": false,\
-        "message": "O autorId fornecido não corresponde a um usuário existente."\
-    }```\
+```
+{
+    "success": false,
+    "message": "O autorId fornecido não corresponde a um usuário existente."
+}
+```
     
 
 **Status `500 Internal Server Error`**
@@ -533,7 +545,8 @@ A estrutura da resposta é idêntica à da listagem de todos os posts, com pagin
 
 JSON
 
-```{
+```
+{
 
     "success": true,
 
@@ -579,8 +592,8 @@ JSON
 
     }
 
-}```
-
+}
+```
 
 ---
 
