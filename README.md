@@ -62,15 +62,15 @@ Siga este passo a passo para configurar e rodar a aplicação localmente.
 
 ### 3. Configurar Variáveis de Ambiente
 
-    O projeto precisa de um arquivo `.env` para carregar informações sensíveis, como as credenciais do banco de dados.
+O projeto precisa de um arquivo `.env` para carregar informações sensíveis, como as credenciais do banco de dados.
 
 1. Crie uma cópia do arquivo `.env.example` e renomeie-a para `.env`.
 
 ### 4. Instalar as Dependências do Projeto
 
-    Este comando irá baixar todas as bibliotecas que a aplicação precisa (Prisma, Express, etc.).
+Este comando irá baixar todas as bibliotecas que a aplicação precisa (Prisma, Express, etc.).
 
-    `npm install`
+`npm install`
 
 ### 5. Subir os Contêineres com Docker
 
@@ -149,13 +149,13 @@ Cria um novo usuário no sistema. Este passo é **necessário** antes de criar p
 
 JSON
 
-`{
+```{
 
   "email": "usuario@exemplo.com",
 
   "name": "Nome do Usuário"
 
-}`
+}```
 
 - `email` (obrigatório): Deve ser um email único.
 - `name` (opcional): Nome do usuário.
@@ -164,7 +164,7 @@ JSON
 
 JSON
 
-`{
+```{
 
     "message": "Usuário criado com sucesso!",
 
@@ -182,7 +182,7 @@ JSON
 
     }
 
-}`
+}```
 
 ---
 
@@ -201,7 +201,7 @@ Cria um novo post, associando-o a um usuário existente através do `autorId`.
 
 JSON
 
-`{
+```{
 
   "titulo": "Primeiro Post",
 
@@ -209,7 +209,7 @@ JSON
 
   "autorId": 1
 
-}`
+}```
 
 
 - `autorId` (obrigatório): Deve ser o `id` de um usuário que já existe no banco de dados.
@@ -220,7 +220,7 @@ A resposta já inclui o objeto completo do autor.
 
 JSON
 
-`{
+```{
 
     "success": true,
 
@@ -252,7 +252,7 @@ JSON
 
     }
 
-}`
+}```
 
 
 ### ❌ Respostas de Erro
@@ -265,13 +265,13 @@ Ocorre quando os dados enviados pelo cliente são inválidos. Existem duas situa
 
 JSON
     
-    `{
+    ```{
 
         "success": false,
 
         "message": "Título é obrigatório"
 
-    }`    
+    }```    
     
     *Outros exemplos de mensagem: "Conteúdo deve ter pelo menos 10 caracteres", "ID do autor é obrigatório e deve ser um número válido".*
     
@@ -279,10 +279,10 @@ JSON
     
 JSON
 
-    `{\
+    ```{\
         "success": false,\
         "message": "O autorId fornecido não corresponde a um usuário existente."\
-    }`\
+    }```\
     
 
 **Status `500 Internal Server Error`**
@@ -291,10 +291,10 @@ Ocorre quando há uma falha inesperada no servidor que impede a criação do pos
 
 JSON
 
-`{\
+```{\
     "success": false,\
     "message": "Não foi possível criar o post."\
-}`\
+}```\
 
 ---
 
@@ -316,7 +316,7 @@ Retorna uma lista paginada de todos os posts, incluindo os dados do autor de cad
 
 JSON
 
-`{
+```{
 
     "success": true,
 
@@ -362,7 +362,7 @@ JSON
 
     }
 
-}`
+}```
 
 
 ---
@@ -378,7 +378,7 @@ Busca um post específico pelo seu ID.
 
 JSON
 
-`{
+```{
 
     "success": true,
 
@@ -408,20 +408,20 @@ JSON
 
     }
 
-}`
+}```
 
 
 ### ❌ Resposta de Erro (404 Not Found)
 
 JSON
 
-`{
+```{
 
     "success": false,
 
     "message": "Post não encontrado"
 
-}`
+}```
 
 
 ---
@@ -439,20 +439,20 @@ Apenas os campos a serem atualizados são necessários.
 
 JSON
 
-`{
+```{
 
   "titulo": "Título Atualizado",
 
   "conteudo": "Conteúdo novo e revisado."
 
-}`
+}```
 
 
 ### ✅ Resposta de Sucesso (200 OK)
 
 JSON
 
-`{
+```{
 
     "success": true,
 
@@ -484,7 +484,7 @@ JSON
 
     }
 
-}`
+}```
 
 
 ---
@@ -500,13 +500,13 @@ Deleta um post do banco de dados.
 
 JSON
 
-`{
+```{
 
     "success": true,
 
     "message": "Post deletado com sucesso"
 
-}`
+}```
 
 
 ---
@@ -533,53 +533,53 @@ A estrutura da resposta é idêntica à da listagem de todos os posts, com pagin
 
 JSON
 
-`{
-    
+```{
+
     "success": true,
-    
+
     "data": [
-        
+
         {
-            
+
             "id": 1,
-            
+
             "titulo": "Primeiro Comunicado",
-            
+
             "conteudo": "Este é o conteúdo do primeiro post.",
-            
+
             "autorId": 1,
-            
+
             "createdAt": "...",
-            
+
             "atualizacao": "...",
-            
+
             "autor": {
-                
+
                 "id": 1,
-                
+
                 "email": "usuario@exemplo.com",
-                
+
                 "name": "Nome do Usuário"
-                
+
             }
-            
+
         }
-        
+
     ],
-    
+
     "pagination": {
-        
+
         "page": 1,
-        
+
         "limit": 5,
-        
+
         "total": 1,
-        
+
         "pages": 1
-        
+
     }
-    
-}`
+
+}```
 
 
 ---
