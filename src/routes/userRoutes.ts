@@ -1,9 +1,23 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
+import { UserController } from "../controllers/UserController";
+import { UserRepository } from "../repositories/UserRepository";
 
+const userRepository = new UserRepository();
+const userController = new UserController(userRepository);
 
-export function UserRoutes() {
+/**
+ * Configura e retorna o roteador para os endpoints de usuário.
+ * @returns {Router} Uma instância do roteador do Express com as rotas de usuário.
+ */
+export function UserRoutes(): Router {
   const routes = Router();
 
-  return routes;
+  /**
+   * @route
+   * @desc
+   * @access
+   */
+  routes.post("/", userController.create);
 
+  return routes;
 }

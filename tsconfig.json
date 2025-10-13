@@ -1,12 +1,15 @@
 {
   "compilerOptions": {
-    "target": "es2020",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
-    "module": "commonjs",                                /* Specify what module code is generated. */
-    // "typeRoots": ["global.d.ts"],                                  /* Specify multiple folders that act like './node_modules/@types'. */
-    "esModuleInterop": true,                             /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
-    "forceConsistentCasingInFileNames": true,            /* Ensure that casing is correct in imports. */
-    "strict": true,                                      /* Enable all strict type-checking options. */
-    "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
-    
-  }
+    "target": "es2020",
+    "module": "commonjs",
+    "outDir": "./dist",                         /* Pasta de saída para o JavaScript compilado */
+    "rootDir": "./src",                         /* Pasta raiz do código-fonte TypeScript */
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "sourceMap": true                           /* Gera source maps para facilitar o debug */
+  },
+  "include": ["src/**/*.ts"],                   /* Inclui apenas os arquivos da pasta src no build */
+  "exclude": ["node_modules", "src/**/__tests__"] /* Exclui os testes do build final de produção */
 }
