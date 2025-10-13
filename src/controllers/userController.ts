@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { UserRepository } from "../repositories/UserRepository";
+import { UserRepository } from "../repositories/userRepository";
 
 /**
  * Controller para gerenciar as requisições HTTP da entidade User.
