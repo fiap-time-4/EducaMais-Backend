@@ -26,8 +26,6 @@ Bash
 
 ### Como Rodar os Testes
 
-### ✅ Método Recomendado (Dentro do Docker)
-
 Como nosso ambiente de desenvolvimento principal é o Docker, os testes devem ser executados dentro do contêiner da aplicação para garantir consistência.
 
 1. **Garanta que os contêineres estejam de pé:**Bash
@@ -74,12 +72,3 @@ Conforme definido em `jest.config.ts`, os testes devem ser criados dentro de uma
     └── PostController.ts           <-- Código do PostController`
 
 ---
-
-### Resumo das Melhorias
-
-Esta versão do `testing.md` é mais completa porque:
-
-1. **Explica a estratégia** de testes com o Prisma mockado.
-2. **Lista todas as dependências** corretas, incluindo o `jest-mock-extended`.
-3. **Prioriza o fluxo de trabalho com Docker**, que é o seu ambiente principal, evitando inconsistências.
-4. **Oferece comandos mais detalhados** para o dia a dia de desenvolvimento.
