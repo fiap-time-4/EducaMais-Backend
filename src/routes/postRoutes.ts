@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { PostController } from "../controllers/PostController";
-import { PostRepository } from "../repositories/PostRepository";
+import { PostController } from "../controllers/postController";
+import { PostRepository } from "../repositories/postRepository";
 
 // Configuração da Injeção de Dependência (DI)
 const postRepository = new PostRepository();

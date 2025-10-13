@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { Request, Response } from "express";
-import { PostRepository } from "../repositories/PostRepository";
+import { PostRepository } from "../repositories/postRepository";
 import {
   validateCreatePost,
   validateUpdatePost,
