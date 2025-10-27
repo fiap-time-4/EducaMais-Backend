@@ -1,7 +1,7 @@
 export interface CreatePostData {
   titulo: string;
   conteudo: string;
-  autorId: number; 
+  autorId: string; 
 }
 
 export interface UpdatePostData {
@@ -31,9 +31,6 @@ export const validateCreatePost = (data: CreatePostData): void => {
     throw new PostValidationError('Conteúdo deve ter no máximo 5000 caracteres');
   }
 
-  if (!data.autorId || typeof data.autorId !== 'number' || data.autorId <= 0) {
-    throw new PostValidationError('ID do autor é obrigatório e deve ser um número válido');
-  }
 };
 
 export const validateUpdatePost = (data: UpdatePostData): void => {
