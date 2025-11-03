@@ -26,7 +26,11 @@ export class PostController {
    */
   public create = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const postData: CreatePostData = req.body;
+      const postData: CreatePostData = {
+        titulo: req.body.titulo,
+        conteudo: req.body.conteudo,
+        autorId: req.user.id,
+      }
       validateCreatePost(postData);
 
       const post = await this.postRepository.create(postData);
@@ -162,6 +166,12 @@ export class PostController {
           .json({ success: false, message: "Post não encontrado" });
       }
 
+      if (postExists.autorId !== req.user.id) {
+        return res
+          .status(403)
+          .json({ success: false, message: "Ação não autorizada" });
+      }
+
       validateUpdatePost(updateData);
 
       const updatedPost = await this.postRepository.update(
@@ -199,6 +209,12 @@ export class PostController {
         return res
           .status(404)
           .json({ success: false, message: "Post não encontrado" });
+      }
+
+      if (postExists.autorId !== req.user.id) {
+        return res
+          .status(403)
+          .json({ success: false, message: "Ação não autorizada" });
       }
 
       await this.postRepository.delete(Number(id));
