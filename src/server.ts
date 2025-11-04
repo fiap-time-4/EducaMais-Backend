@@ -9,7 +9,11 @@ const app = express()
 export { app }; // Exporta a instância do app para os testes
 
 app.use(cors({
-  origin: "*"
+  origin: [process.env.FRONTEND_ORIGIN || "*", "http://localhost:3000"],
+  credentials: true,
+  methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Set-Cookie']
 }));
 
 app.all("/api/auth/*splat", toNodeHandler(auth));
