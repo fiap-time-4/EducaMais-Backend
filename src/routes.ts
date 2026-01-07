@@ -1,6 +1,5 @@
 import { Router, Request, Response } from "express";
 import { PostRoutes } from "./routes/postRoutes";
-import { UserRoutes } from "./routes/userRoutes";
 
 const routes = Router();
 
@@ -12,6 +11,5 @@ routes.get('/health', (req: Request, res: Response) => {
 
 
 routes.use('/posts', PostRoutes());
-routes.use('/users', UserRoutes());
 
 export default routes;

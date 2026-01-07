@@ -8,6 +8,7 @@ jest.mock('./util/prisma', () => ({
   default: mockDeep<PrismaClient>(),
 }))
 
+
 // Garante que o mock seja limpo antes de cada teste
 beforeEach(() => {
   mockReset(prisma)

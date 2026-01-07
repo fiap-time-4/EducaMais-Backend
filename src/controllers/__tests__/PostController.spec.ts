@@ -3,15 +3,25 @@ import { app } from "../../server";
 import { prisma } from "../../jest.setup";
 import { Prisma } from '@prisma/client';
 
+jest.mock("../../util/auth", () => ({
+  auth: {
+    api: {
+      getSession: jest.fn().mockResolvedValue({
+        user: { id: "test-user", email: "user@test.com", name: "User Test" }
+      })
+    }
+  }
+}));
+
 describe("Fluxo de Post - Endpoints /posts", () => {
   // --- Mock Data ---
   // Criamos dados falsos que podemos usar em vários testes
-  const mockAuthor = { id: 1, email: "autor@teste.com", name: "Autor Teste" };
+  const mockAuthor = { id: "test-user", email: "autor@teste.com", name: "Autor Teste" };
   const mockPost = {
     id: 1,
     titulo: "Post de Teste",
     conteudo: "Conteúdo do post de teste.",
-    autorId: 1,
+    autorId: "test-user",
     autor: mockAuthor,
     createdAt: new Date(),
     atualizacao: new Date(),
@@ -27,7 +37,7 @@ describe("Fluxo de Post - Endpoints /posts", () => {
       const postData = {
         titulo: "Post com autor inválido",
         conteudo: "Conteúdo válido",
-        autorId: 999,
+        autorId: "test-user-inexistente",
       };
 
       // CORREÇÃO AQUI: Criamos um erro que passa na verificação 'instanceof'
