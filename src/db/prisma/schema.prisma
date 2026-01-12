@@ -19,6 +19,12 @@ model Post {
   @@map("posts")
 }
 
+enum Role {
+  ADMIN
+  TEACHER
+  STUDENT
+}
+
 model User {
   id            String    @id
   name          String
@@ -27,6 +33,7 @@ model User {
   image         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @default(now()) @updatedAt
+  role          Role      @default(STUDENT)
   sessions      Session[]
   accounts      Account[]
   posts         Post[]

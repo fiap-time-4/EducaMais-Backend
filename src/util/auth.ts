@@ -5,8 +5,19 @@ import prisma from './prisma';
 export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "postgresql",
-
     }),
+
+    user: {
+        additionalFields: {
+            role: {
+                type: "string",
+                required: false,
+                defaultValue: "STUDENT",
+                input: false, // Bloqueia o usuário de definir o próprio cargo no cadastro público
+            },
+        },
+    },
+
     trustedOrigins: [process.env.FRONTEND_ORIGIN || "*", "http://localhost:3000"],
     advanced: {
         disableOriginCheck: true,
