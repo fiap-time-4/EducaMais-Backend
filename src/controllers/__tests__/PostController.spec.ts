@@ -7,7 +7,7 @@ jest.mock("../../util/auth", () => ({
   auth: {
     api: {
       getSession: jest.fn().mockResolvedValue({
-        user: { id: "test-user", email: "user@test.com", name: "User Test" }
+        user: { id: "test-user", email: "user@test.com", name: "User Test", role: "admin", appRole: 'ADMIN' }
       })
     }
   }
