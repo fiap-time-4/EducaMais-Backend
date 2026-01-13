@@ -19,12 +19,6 @@ model Post {
   @@map("posts")
 }
 
-enum Role {
-  ADMIN
-  TEACHER
-  STUDENT
-}
-
 model User {
   id            String    @id
   name          String
@@ -32,8 +26,12 @@ model User {
   emailVerified Boolean   @default(false)
   image         String?
   createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now()) @updatedAt
-  role          Role      @default(STUDENT)
+  updatedAt     DateTime  @updatedAt
+  role          String?
+  banned        Boolean?  @default(false)
+  banReason     String?
+  banExpires    DateTime?
+  appRole       String?   @default("STUDENT")
   sessions      Session[]
   accounts      Account[]
   posts         Post[]

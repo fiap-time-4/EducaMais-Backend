@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { PostController } from "../controllers/postController";
 import { PostRepository } from "../repositories/postRepository";
-import { ensureAuthenticated } from "../middlewares/ensure_auth" ;
+import { ensureAuthenticatedAsAdminOrTeacher } from "../middlewares/ensure_auth" ;
 
 // Configuração da Injeção de Dependência (DI)
 const postRepository = new PostRepository();
@@ -24,7 +24,7 @@ export function PostRoutes(): Router {
    * @route   POST /posts
    * @desc    Cria um novo post.
    */
-  routes.post('/', ensureAuthenticated, postController.create);
+  routes.post('/', ensureAuthenticatedAsAdminOrTeacher, postController.create);
 
   /**
    * @route   GET /posts
@@ -42,13 +42,13 @@ export function PostRoutes(): Router {
    * @route   PUT /posts/:id
    * @desc    Atualiza um post existente.
    */
-  routes.put('/:id', ensureAuthenticated, postController.update);
+  routes.put('/:id', ensureAuthenticatedAsAdminOrTeacher, postController.update);
 
   /**
    * @route   DELETE /posts/:id
    * @desc    Deleta um post.
    */
-  routes.delete('/:id', ensureAuthenticated, postController.delete);
+  routes.delete('/:id', ensureAuthenticatedAsAdminOrTeacher, postController.delete);
 
   return routes;
 }
