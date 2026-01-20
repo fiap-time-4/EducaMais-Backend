@@ -1,15 +1,15 @@
 import prisma from '../util/prisma';
 import { auth } from '../util/auth';
 import { User } from '@prisma/client';
-import { CreateUserData,UpdateUserData } from '../validation/userValidation';
-import { role } from 'better-auth/plugins';
+import { CreateUserData, UpdateUserData } from '../validation/userValidation';
 
 /**
- * Define a estrutura para opções de paginação.
+ * Define a estrutura para opções de paginação e FILTRO.
  */
 interface FindAllOptions {
   skip: number;
   take: number;
+  role?: string; // <--- ADICIONADO: Opcional para filtrar
 }
 
 /**
@@ -25,9 +25,7 @@ interface SearchOptions extends FindAllOptions {
 export class UserRepository {
 
   /**
-   * Cria um novo post no banco de dados.
-   * @param {CreateUserData} usrData - Os dados para a criação do novo post.
-   * @returns {Promise<User>} O objeto do post criado, incluindo os dados do autor.
+   * Cria um novo usuário no banco de dados via Better Auth + Prisma.
    */
   public async create(usrData: CreateUserData): Promise<User> {
     console.log(usrData);
@@ -36,8 +34,8 @@ export class UserRepository {
         email: usrData.email,
         password: usrData.password,
         name: usrData.name,
-        role: usrData.role || "user",
-        data: {appRole: usrData.appRole || 'STUDENT'},
+        role: usrData.role || "user", // Role do plugin (controle de acesso)
+        data: { appRole: usrData.appRole || 'STUDENT' }, // Role da aplicação (negócio)
       }
     });
 
@@ -47,39 +45,28 @@ export class UserRepository {
   }
 
   /**
-   * Atualiza um post existente no banco de dados.
-   * @param {string} id - O ID do post a ser atualizado.
-   * @param {UpdateUserData} usrData - Os dados a serem atualizados.
-   * @param {headers} headers - Os cabeçalhos da requisição.
-   * @returns {Promise<User>} O objeto do post atualizado, incluindo o autor.
+   * Atualiza um usuário existente.
    */
   public async update(id: string, usrData: UpdateUserData, headers: HeadersInit): Promise<User | null> {
     await auth.api.adminUpdateUser({
-      body:{
+      body: {
         userId: id,
         data: {
           name: usrData.name,
           email: usrData.email,
           password: usrData.password,
           role: usrData.role,
-          data: {appRole: usrData.appRole},
+          data: { appRole: usrData.appRole },
         }
       },
       headers
-      
     });
 
     return await prisma.user.findFirst({
       where: { id },
     });
-
   }
 
-  /**
-   * Busca um post específico pelo seu ID.
-   * @param {string} id - O ID do post a ser buscado.
-   * @returns {Promise<User | null>} O objeto do post encontrado ou nulo se não existir.
-   */
   public async findById(id: string): Promise<User | null> {
     return prisma.user.findUnique({
       where: { id },
@@ -90,28 +77,30 @@ export class UserRepository {
   }
 
   /**
-   * Busca todos os posts com paginação.
-   * @param {FindAllOptions} options - As opções de paginação (skip, take).
-   * @returns {Promise<[User[], number]>} Uma tupla contendo a lista de posts e o número total de posts.
+   * Busca todos os usuários com paginação E FILTRO DE ROLE.
    */
-  public async findAll({ skip, take }: FindAllOptions): Promise<[User[], number]> {
+  public async findAll({ skip, take, role }: FindAllOptions): Promise<[User[], number]> {
+    // --- AQUI ESTÁ A CORREÇÃO PRINCIPAL ---
+    // Se o parâmetro 'role' vier (ex: "TEACHER"), filtramos pelo 'appRole'.
+    // Se não vier, trazemos todos (objeto vazio).
+    const where = role ? { appRole: role } : {};
+
     return prisma.$transaction([
       prisma.user.findMany({
         skip,
         take,
+        where, // Aplica o filtro aqui
         orderBy: { createdAt: 'desc' },
         include: {
           posts: true,
         },
       }),
-      prisma.user.count(),
+      prisma.user.count({ where }), // Conta apenas os filtrados para a paginação funcionar
     ]);
   }
 
   /**
-   * Busca posts por um termo chave no título ou conteúdo, com paginação.
-   * @param {SearchOptions} options - As opções de busca e paginação.
-   * @returns {Promise<[User[], number]>} Uma tupla contendo a lista de posts encontrados e o total.
+   * Busca usuários por um termo chave.
    */
   public async search({ search, skip, take }: SearchOptions): Promise<[User[], number]> {
     const where = search
@@ -137,11 +126,6 @@ export class UserRepository {
     ]);
   }
 
-  /**
-   * Deleta um post do banco de dados.
-   * @param {string} id - O ID do post a ser deletado.
-   * @returns {Promise<void>}
-   */
   public async delete(id: string): Promise<void> {
     await prisma.user.delete({
       where: { id },

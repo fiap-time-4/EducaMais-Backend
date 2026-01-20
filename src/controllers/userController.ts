@@ -9,21 +9,9 @@ import {
   validateUpdateUser
 } from "../validation/userValidation";
 
-/**
- * Controller para gerenciar as requisições HTTP da entidade User.
- */
 export class UserController {
-  /**
-   * Cria uma instância do UserController.
-   * @param {UserRepository} userRepository
-   */
   constructor(private userRepository: UserRepository) {}
 
-  /**
-   * @route   POST /users
-   * @desc    Cria um novo usuário.
-   * @access  Público
-   */
   public create = async (req: Request, res: Response): Promise<Response> => {
     try {
       const userData: CreateUserData = {
@@ -47,40 +35,34 @@ export class UserController {
       if (error instanceof UserValidationError) {
         return res.status(400).json({ success: false, message: error.message });
       }
-
-      // Verificação específica para o erro de chave estrangeira do Prisma
       if (
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === "P2003"
       ) {
         return res.status(400).json({
           success: false,
-          message:
-            "O autorId fornecido não corresponde a um usuário existente.",
+          message: "O autorId fornecido não corresponde a um usuário existente.",
         });
       }
-
       console.error("Erro ao criar usuário:", error);
-      return res
-        .status(500)
-        .json({ success: false, message: "Não foi possível criar o usuário." });
+      return res.status(500).json({ success: false, message: "Não foi possível criar o usuário." });
     }
   };
 
-  /**
-   * @route   GET /users
-   * @desc    Lista todos os usuários com paginação.
-   * @access  Público
-   */
   public getAll = async (req: Request, res: Response): Promise<Response> => {
     try {
+      // CORREÇÃO: Forçamos o tipo string nas queries também para evitar erros futuros
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 10;
       const skip = (page - 1) * limit;
 
+      // Pegando o role e garantindo que é string ou undefined
+      const role = req.query.role as string | undefined;
+
       const [users, total] = await this.userRepository.findAll({
         skip,
         take: limit,
+        role, 
       });
 
       return res.json({
@@ -90,22 +72,16 @@ export class UserController {
       });
     } catch (error) {
       console.error("Erro ao buscar usuários:", error);
-      return res
-        .status(500)
-        .json({ success: false, message: "Erro interno do servidor" });
+      return res.status(500).json({ success: false, message: "Erro interno do servidor" });
     }
   };
 
-  /**
-   * @route   GET /users/search
-   * @desc    Busca usuários por um termo chave.
-   * @access  Público
-   */
   public searchAll = async (req: Request, res: Response): Promise<Response> => {
     try {
       const page = parseInt(req.query.page as string) || 1;
       const limit = parseInt(req.query.limit as string) || 10;
       const skip = (page - 1) * limit;
+      // CORREÇÃO: Garantimos que o search é string
       const search = (req.query.search as string)?.trim();
 
       const [users, total] = await this.userRepository.search({
@@ -121,72 +97,55 @@ export class UserController {
       });
     } catch (error) {
       console.error("Erro ao buscar usuários:", error);
-      return res
-        .status(500)
-        .json({ success: false, message: "Erro interno do servidor" });
+      return res.status(500).json({ success: false, message: "Erro interno do servidor" });
     }
   };
 
-  /**
-   * @route   GET /users/:id
-   * @desc    Busca um usuário específico pelo ID.
-   * @access  Público
-   */
+  // --- MÉTODOS ONDE OCORRE O ERRO DE ID ---
+
   public getById = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const { id } = req.params;
+      // CORREÇÃO: Usamos 'as string' para garantir que não é um array
+      const id = req.params.id as string;
+      
       const user = await this.userRepository.findById(id);
 
       if (!user) {
-        return res
-          .status(404)
-          .json({ success: false, message: "Usuário não encontrado" });
+        return res.status(404).json({ success: false, message: "Usuário não encontrado" });
       }
 
       return res.json({ success: true, data: user });
     } catch (error) {
       console.error("Erro ao buscar usuário:", error);
-      return res
-        .status(500)
-        .json({ success: false, message: "Erro interno do servidor" });
+      return res.status(500).json({ success: false, message: "Erro interno do servidor" });
     }
   };
 
-  /**
-   * @route   PUT /users/:id
-   * @desc    Atualiza um usuário existente.
-   * @access  Público
-   */
   public update = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const { id } = req.params;
+      // CORREÇÃO: Usamos 'as string' aqui também
+      const id = req.params.id as string;
       const updateData: UpdateUserData = req.body;
 
       const userExists = await this.userRepository.findById(id);
       if (!userExists) {
-        return res
-          .status(404)
-          .json({ success: false, message: "Usuário não encontrado" });
+        return res.status(404).json({ success: false, message: "Usuário não encontrado" });
       }
 
-      if(req.user.role !== "ADMIN") {
-        if (userExists.id !== req.user.id) {
-          return res
-            .status(403)
-            .json({ success: false, message: "Ação não autorizada" });
+      // Precisamos tipar o req.user corretamente ou fazer um cast se ele vier do middleware
+      const requestUser = (req as any).user;
+
+      if(requestUser && requestUser.role !== "ADMIN") {
+        if (userExists.id !== requestUser.id) {
+          return res.status(403).json({ success: false, message: "Ação não autorizada" });
         }
 
         if (updateData.role !== undefined) {
-          return res
-            .status(403)
-            .json({ success: false, message: "Ação não autorizada" });
+          return res.status(403).json({ success: false, message: "Ação não autorizada" });
         }
-
       }
-      
 
       validateUpdateUser(updateData);
-
 
       const updatedUser = await this.userRepository.update(
         id,
@@ -204,44 +163,33 @@ export class UserController {
         return res.status(400).json({ success: false, message: error.message });
       }
       console.error("Erro ao atualizar usuário:", error);
-      return res
-        .status(500)
-        .json({ success: false, message: "Erro interno do servidor" });
+      return res.status(500).json({ success: false, message: "Erro interno do servidor" });
     }
   };
 
-  /**
-   * @route   DELETE /users/:id
-   * @desc    Deleta um usuário existente.
-   * @access  Público
-   */
   public delete = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const { id } = req.params;
+      // CORREÇÃO: Usamos 'as string' aqui também
+      const id = req.params.id as string;
 
       const userExists = await this.userRepository.findById(id);
       if (!userExists) {
-        return res
-          .status(404)
-          .json({ success: false, message: "Usuário não encontrado" });
+        return res.status(404).json({ success: false, message: "Usuário não encontrado" });
       }
 
-      if (req.user.role !== "ADMIN") {
-        if (userExists.id !== req.user.id) {
-          return res
-            .status(403)
-            .json({ success: false, message: "Ação não autorizada" });
+      const requestUser = (req as any).user;
+
+      if (requestUser && requestUser.role !== "ADMIN") {
+        if (userExists.id !== requestUser.id) {
+          return res.status(403).json({ success: false, message: "Ação não autorizada" });
         }
       }
       
-
       await this.userRepository.delete(id);
       return res.json({ success: true, message: "Usuário deletado com sucesso" });
     } catch (error) {
       console.error("Erro ao deletar usuário:", error);
-      return res
-        .status(500)
-        .json({ success: false, message: "Erro interno do servidor" });
+      return res.status(500).json({ success: false, message: "Erro interno do servidor" });
     }
   };
 }
