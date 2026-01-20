@@ -3,11 +3,12 @@ import { Post } from '@prisma/client';
 import { CreatePostData, UpdatePostData } from '../validation/postValidation';
 
 /**
- * Define a estrutura para opções de paginação.
+ * Define a estrutura para opções de paginação e filtro.
  */
 interface FindAllOptions {
   skip: number;
   take: number;
+  authorId?: string; // <--- Adicionado: Filtro opcional pelo ID do autor
 }
 
 /**
@@ -75,21 +76,26 @@ export class PostRepository {
   }
 
   /**
-   * Busca todos os posts com paginação.
-   * @param {FindAllOptions} options - As opções de paginação (skip, take).
+   * Busca todos os posts com paginação e filtro opcional por autor.
+   * @param {FindAllOptions} options - As opções de paginação (skip, take) e filtro (authorId).
    * @returns {Promise<[Post[], number]>} Uma tupla contendo a lista de posts e o número total de posts.
    */
-  public async findAll({ skip, take }: FindAllOptions): Promise<[Post[], number]> {
+  public async findAll({ skip, take, authorId }: FindAllOptions): Promise<[Post[], number]> {
+    // Se authorId for passado, criamos o filtro. Se não, o filtro fica vazio (vê tudo).
+    // Usamos 'autor: { id: ... }' para garantir que funciona independente do nome da coluna FK.
+    const where = authorId ? { autor: { id: authorId } } : {};
+
     return prisma.$transaction([
       prisma.post.findMany({
         skip,
         take,
+        where, // <--- Aplicamos o filtro aqui
         orderBy: { createdAt: 'desc' },
         include: {
           autor: true,
         },
       }),
-      prisma.post.count(),
+      prisma.post.count({ where }), // <--- E aqui também, para a contagem da paginação bater
     ]);
   }
 
@@ -98,8 +104,9 @@ export class PostRepository {
    * @param {SearchOptions} options - As opções de busca e paginação.
    * @returns {Promise<[Post[], number]>} Uma tupla contendo a lista de posts encontrados e o total.
    */
-  public async search({ search, skip, take }: SearchOptions): Promise<[Post[], number]> {
-    const where = search
+  public async search({ search, skip, take, authorId }: SearchOptions): Promise<[Post[], number]> {
+    // Monta a query base (busca por texto)
+    const searchFilter = search
       ? {
           OR: [
             { titulo: { contains: search, mode: 'insensitive' as const } },
@@ -107,6 +114,11 @@ export class PostRepository {
           ],
         }
       : {};
+
+    // Se tiver filtro de autor, combinamos com o filtro de busca usando AND
+    const where = authorId 
+      ? { AND: [searchFilter, { autor: { id: authorId } }] }
+      : searchFilter;
 
     return prisma.$transaction([
       prisma.post.findMany({

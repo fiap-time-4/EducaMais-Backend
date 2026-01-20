@@ -22,7 +22,7 @@ export class PostController {
   /**
    * @route   POST /posts
    * @desc    Cria um novo post.
-   * @access  Público
+   * @access  Privado
    */
   public create = async (req: Request, res: Response): Promise<Response> => {
     try {
@@ -66,7 +66,7 @@ export class PostController {
 
   /**
    * @route   GET /posts
-   * @desc    Lista todos os posts com paginação.
+   * @desc    Lista todos os posts com paginação. Aceita ?authorId=...
    * @access  Público
    */
   public getAll = async (req: Request, res: Response): Promise<Response> => {
@@ -75,9 +75,13 @@ export class PostController {
       const limit = parseInt(req.query.limit as string) || 10;
       const skip = (page - 1) * limit;
 
+      // --- MUDANÇA AQUI: Captura o authorId da URL ---
+      const authorId = req.query.authorId as string | undefined;
+
       const [posts, total] = await this.postRepository.findAll({
         skip,
         take: limit,
+        authorId, // --- Repassa para o repositório
       });
 
       return res.json({
@@ -95,7 +99,7 @@ export class PostController {
 
   /**
    * @route   GET /posts/search
-   * @desc    Busca posts por um termo chave.
+   * @desc    Busca posts por um termo chave. Aceita ?authorId=...
    * @access  Público
    */
   public searchAll = async (req: Request, res: Response): Promise<Response> => {
@@ -104,11 +108,15 @@ export class PostController {
       const limit = parseInt(req.query.limit as string) || 10;
       const skip = (page - 1) * limit;
       const search = (req.query.search as string)?.trim();
+      
+      // --- MUDANÇA AQUI TAMBÉM: Captura o authorId ---
+      const authorId = req.query.authorId as string | undefined;
 
       const [posts, total] = await this.postRepository.search({
         search,
         skip,
         take: limit,
+        authorId, // --- Repassa para o repositório
       });
 
       return res.json({
@@ -152,7 +160,7 @@ export class PostController {
   /**
    * @route   PUT /posts/:id
    * @desc    Atualiza um post existente.
-   * @access  Público
+   * @access  Privado (Apenas dono ou Admin)
    */
   public update = async (req: Request, res: Response): Promise<Response> => {
     try {
@@ -166,7 +174,9 @@ export class PostController {
           .json({ success: false, message: "Post não encontrado" });
       }
 
-      if (postExists.autorId !== req.user.id) {
+      // Verifica se quem está tentando editar é o dono ou é ADMIN
+      // Ajuste para permitir que ADMIN edite qualquer post (opcional, mas recomendado)
+      if (postExists.autorId !== req.user.id && req.user.role !== "ADMIN") {
         return res
           .status(403)
           .json({ success: false, message: "Ação não autorizada" });
@@ -198,7 +208,7 @@ export class PostController {
   /**
    * @route   DELETE /posts/:id
    * @desc    Deleta um post existente.
-   * @access  Público
+   * @access  Privado (Apenas dono ou Admin)
    */
   public delete = async (req: Request, res: Response): Promise<Response> => {
     try {
@@ -211,7 +221,8 @@ export class PostController {
           .json({ success: false, message: "Post não encontrado" });
       }
 
-      if (postExists.autorId !== req.user.id) {
+      // Verifica permissão (Dono ou Admin)
+      if (postExists.autorId !== req.user.id && req.user.role !== "ADMIN") {
         return res
           .status(403)
           .json({ success: false, message: "Ação não autorizada" });

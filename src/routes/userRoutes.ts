@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { UserController } from "../controllers/userController";
 import { UserRepository } from "../repositories/userRepository";
-import { ensureAuthenticated, ensureAuthenticatedAsAdmin } from "../middlewares/ensure_auth" ;
+import { ensureAuthenticated, ensureAuthenticatedAsAdmin, ensureAuthenticatedAsAdminOrTeacher } from "../middlewares/ensure_auth" ;
 
 // Configuração da Injeção de Dependência (DI)
 const userRepository = new UserRepository();
@@ -24,7 +24,7 @@ export function UserRoutes(): Router {
    * @route   POST /users
    * @desc    Cria um novo usuário.
    */
-  routes.post('/', ensureAuthenticatedAsAdmin, userController.create);
+  routes.post('/', ensureAuthenticatedAsAdminOrTeacher, userController.create);
 
   /**
    * @route   GET /users
