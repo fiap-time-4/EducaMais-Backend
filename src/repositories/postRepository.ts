@@ -132,4 +132,19 @@ export class PostRepository {
       where: { id },
     });
   }
+
+  public async findAllByAuthor(id: string, { skip, take }: FindAllOptions): Promise<[Post[], number]> {
+    return prisma.$transaction([
+      prisma.post.findMany({
+        where: { autorId: id },
+        skip,
+        take,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          autor: true,
+        },
+      }),
+      prisma.post.count({ where: { autorId: id } }),
+    ]);
+  }
 }

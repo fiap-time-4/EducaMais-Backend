@@ -4,9 +4,11 @@ import { UserRepository } from "../repositories/userRepository";
 import {
   CreateUserData,
   UpdateUserData,
+  ChangeUserPassword,
   UserValidationError,
   validateCreateUser,
-  validateUpdateUser
+  validateUpdateUser,
+  validateChangeUserPassword
 } from "../validation/userValidation";
 
 /**
@@ -169,7 +171,8 @@ export class UserController {
           .json({ success: false, message: "Usuário não encontrado" });
       }
 
-      if(req.user.role !== "ADMIN") {
+
+      if(req.user.role === "STUDENT") {
         if (userExists.id !== req.user.id) {
           return res
             .status(403)
@@ -226,7 +229,7 @@ export class UserController {
           .json({ success: false, message: "Usuário não encontrado" });
       }
 
-      if (req.user.role !== "ADMIN") {
+      if (req.user.role === "STUDENT") {
         if (userExists.id !== req.user.id) {
           return res
             .status(403)
@@ -244,4 +247,49 @@ export class UserController {
         .json({ success: false, message: "Erro interno do servidor" });
     }
   };
+
+  public changePassword = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const { id } = req.params;
+      const usrData: ChangeUserPassword = {
+        oldPassword: req.body.oldPassword || "",
+        newPassword: req.body.newPassword,
+      };
+
+      validateChangeUserPassword(usrData);
+
+      const userExists = await this.userRepository.findById(id);
+      if (!userExists) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Usuário não encontrado" });
+      }
+
+      if( req.user.role === "STUDENT") {
+        if (userExists.id !== req.user.id) {
+          return res
+            .status(403)
+            .json({ success: false, message: "Ação não autorizada" });
+        }
+
+        await this.userRepository.changePassword(id, usrData, req.headers as HeadersInit);
+
+        return res.json({
+          success: true,
+          message: "Senha alterada com sucesso",
+        });
+      }
+
+      await this.userRepository.adminChangePassword(id, usrData.newPassword , req.headers as HeadersInit);
+      return res.json({
+        success: true,
+        message: "Senha alterada com sucesso",
+      });
+
+    } catch (error) {
+        return res
+          .status(500)
+          .json({ success: false, message: "Erro interno do servidor" });
+      }
+  }
 }
