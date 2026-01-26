@@ -227,4 +227,29 @@ export class PostController {
         .json({ success: false, message: "Erro interno do servidor" });
     }
   };
+
+  public getAllByAuthor = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 10;
+      const skip = (page - 1) * limit;
+      const userId = req.params.userId;
+
+      const [posts, total] = await this.postRepository.findAllByAuthor(userId, {
+        skip,
+        take: limit,
+      });
+
+      return res.json({
+        success: true,
+        data: posts,
+        pagination: { page, limit, total, pages: Math.ceil(total / limit) },
+      });
+    } catch (error) {
+      console.error("Erro ao buscar posts:", error);
+      return res
+        .status(500)
+        .json({ success: false, message: "Erro interno do servidor" });
+    }
+  };
 }

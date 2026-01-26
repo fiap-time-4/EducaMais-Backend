@@ -50,5 +50,7 @@ export function PostRoutes(): Router {
    */
   routes.delete('/:id', ensureAuthenticatedAsAdminOrTeacher, postController.delete);
 
+  routes.get('/user/:userId', postController.getAllByAuthor);
+
   return routes;
 }
