@@ -16,6 +16,11 @@ export interface UpdateUserData {
 
 }
 
+export interface ChangeUserPassword {
+  oldPassword: string;
+  newPassword: string;
+}
+
 export class UserValidationError extends Error {
   constructor(message: string) {
     super(message);
@@ -57,5 +62,11 @@ export const validateUpdateUser = (data: UpdateUserData): void => {
     if (!data.password || data.password.trim().length < 6) {
       throw new UserValidationError('Senha deve ter pelo menos 5 caracteres');
     }
+  }
+};
+
+export const validateChangeUserPassword = (data: ChangeUserPassword): void => {
+  if (!data.newPassword || data.newPassword.trim().length < 6) {
+    throw new UserValidationError('Nova senha deve ter pelo menos 5 caracteres');
   }
 };

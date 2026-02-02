@@ -1,8 +1,7 @@
 import prisma from '../util/prisma';
 import { auth } from '../util/auth';
 import { User } from '@prisma/client';
-import { CreateUserData,UpdateUserData } from '../validation/userValidation';
-import { role } from 'better-auth/plugins';
+import { CreateUserData,UpdateUserData, ChangeUserPassword } from '../validation/userValidation';
 
 /**
  * Define a estrutura para opções de paginação.
@@ -143,8 +142,35 @@ export class UserRepository {
    * @returns {Promise<void>}
    */
   public async delete(id: string): Promise<void> {
+    await auth.api.revokeUserSessions({
+      body: {
+        userId: id,
+      }
+    });
+
     await prisma.user.delete({
       where: { id },
     });
+  }
+
+  public async changePassword(id: string, usrData: ChangeUserPassword, headers: HeadersInit): Promise<void> {
+    await auth.api.changePassword({
+        body: {
+            newPassword: usrData.newPassword,
+            currentPassword: usrData.oldPassword,
+            revokeOtherSessions: true,
+        },
+        headers
+    });
+  }
+
+  public async adminChangePassword(id: string, password: string, headers: HeadersInit): Promise<void> {
+    await auth.api.setUserPassword({
+      body: {
+          newPassword: password, 
+          userId: id, 
+      },
+      headers
+    })
   }
 }
